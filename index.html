@@ -4,28 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rate of Pay Safe Harbor Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result p {
+            font-size: 1.1em;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h3>Rate of Pay Safe Harbor Calculator</h3>
 
-        <label for="age">Employee Age:</label>
-        <input type="number" id="age" placeholder="Enter age" />
+<div class="container">
+    <h3>Rate of Pay Safe Harbor Calculator</h3>
 
-        <label for="hourlyRate">Current Hourly Rate ($):</label>
-        <input type="number" id="hourlyRate" placeholder="Enter hourly rate" />
+    <table>
+        <tr>
+            <th>Employee Age</th>
+            <td><input type="number" id="age" placeholder="Enter age"></td>
+            <th>Current Hourly Rate ($)</th>
+            <td><input type="number" id="hourlyRate" placeholder="Enter hourly rate"></td>
+        </tr>
+        <tr>
+            <th>Minimum Hours For Full Time</th>
+            <td>120</td>
+            <th>Income Percentage Threshold</th>
+            <td>8.39%</td>
+        </tr>
+        <tr>
+            <th>Monthly Salary Based on Min Hours</th>
+            <td id="monthlySalary">$0.00</td>
+            <th>Employee Contribution Percentage</th>
+            <td>30.00%</td>
+        </tr>
+        <tr>
+            <th>Insurance Plan</th>
+            <td>Silver 70 HMO</td>
+            <th>Insurance Fee (Employee's Contribution)</th>
+            <td id="insuranceFee">$0.00</td>
+        </tr>
+        <tr>
+            <th>Maximum Monthly Contribution</th>
+            <td id="maxMonthlyContribution">$0.00</td>
+            <th>Required Hourly Rate</th>
+            <td id="requiredHourlyRate">$0.00</td>
+        </tr>
+        <tr>
+            <th>Meets Requirement?</th>
+            <td id="meetsRequirement" colspan="3">-</td>
+        </tr>
+    </table>
 
-        <button onclick="calculate()">Calculate</button>
+    <button onclick="calculate()">Calculate</button>
+</div>
 
-        <div class="result">
-            <p><strong>Insurance Fee:</strong> <span id="insuranceFee">$0.00</span></p>
-            <p><strong>Maximum Monthly Contribution:</strong> <span id="maxMonthlyContribution">$0.00</span></p>
-            <p><strong>Required Hourly Rate:</strong> <span id="requiredHourlyRate">$0.00</span></p>
-            <p><strong>Meets Requirement?</strong> <span id="meetsRequirement">-</span></p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
