@@ -1,53 +1,70 @@
-document.addEventListener("DOMContentLoaded", async function () {
-    const response = await fetch("config.json");
-    const config = await response.json();
+// Load JSON data
+async function loadJSON(url) {
+    const response = await fetch(url);
+    return await response.json();
+}
 
-    const insuranceResponse = await fetch("insurance-fees.json");
-    const insuranceData = await insuranceResponse.json();
-
-    document.getElementById("calculate").addEventListener("click", calculate);
-
-    async function calculate() {
+async function calculate() {
+    try {
         const age = parseInt(document.getElementById("age").value);
         const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
-        
+
+        // Load configuration and insurance fee data
+        const config = await loadJSON('config.json');
+        const insuranceData = await loadJSON('insurance-fees.json');
+
         const minFullTimeHours = config.minFullTimeHours;
         const incomePercentageThreshold = config.incomePercentageThreshold;
         const employeeContributionPercentage = config.employeeContributionPercentage;
 
-        // Calculate values
-        const monthlySalary = hourlyRate * minFullTimeHours;
-        const maxMonthlyContribution = monthlySalary * (incomePercentageThreshold / 100);
-        
-        let employeeInsuranceFee = 0;
-        
-        // Check insurance fees
-        for (const [range, fee] of Object.entries(insuranceData.insuranceFees)) {
+        let insuranceFee = 0;
+
+        // Iterate over the ranges
+        for (const range in insuranceData.insuranceFees) {
             const [minAge, maxAge] = range.split('-').map(Number);
+
+            // Handle ranges (e.g., 0-14, 64-99, 100-199)
             if (maxAge && age >= minAge && age <= maxAge) {
-                employeeInsuranceFee = fee * (employeeContributionPercentage / 100);
+                insuranceFee = insuranceData.insuranceFees[range];
                 break;
-            } else if (!maxAge && age === minAge) {
-                employeeInsuranceFee = fee * (employeeContributionPercentage / 100);
+            }
+            // Handle exact age matches (e.g., 15, 16)
+            else if (!maxAge && age === minAge) {
+                insuranceFee = insuranceData.insuranceFees[range];
                 break;
             }
         }
 
-        // Default values for insurance fees out of range
-        if (employeeInsuranceFee === 0) {
+        if (insuranceFee === 0) {
             alert("Insurance fee not found for this age.");
             return;
         }
 
-        const requiredHourlyRate = employeeInsuranceFee / (minFullTimeHours * (incomePercentageThreshold / 100));
+        // Calculate the employee's contribution (30% of total fee)
+        const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
 
-        // Update values on the page
+        // Calculate monthly salary based on min hours
+        const monthlySalary = hourlyRate * minFullTimeHours;
+
+        // Calculate maximum monthly contribution (8.39% of monthly salary)
+        const maxMonthlyContribution = monthlySalary * incomePercentageThreshold;
+
+        // Calculate required hourly rate
+        const requiredHourlyRate = employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold);
+
+        // Determine if the employee meets the requirement
+        const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
+
+        // Update the UI with corrected values
         document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
         document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
         document.getElementById("maxMonthlyContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
-        document.getElementById("requiredRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
-
-        const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
+        document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
         document.getElementById("meetsRequirement").innerText = meetsRequirement;
+    } catch (error) {
+        console.error("Error in calculation:", error);
     }
-});
+}
+
+// Attach calculate function to the button
+document.getElementById("calculateBtn").addEventListener("click", calculate);
