@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
             
             const minFullTimeHours = config.minFullTimeHours;
-            const incomePercentageThreshold = config.incomePercentageThreshold / 100;
-            const employeeContributionPercentage = config.employeeContributionPercentage / 100;
+            const incomePercentageThreshold = config.incomePercentageThreshold / 100; // Keep as is
+            const employeeContributionPercentage = config.employeeContributionPercentage / 100; // Keep as is
 
             // Calculate values
             const monthlySalary = hourlyRate * minFullTimeHours;
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let employeeInsuranceFee = 0;
             if (age in insuranceData.insuranceFees) {
                 const insuranceFee = insuranceData.insuranceFees[age];
-                employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
+                employeeInsuranceFee = (insuranceFee * employeeContributionPercentage); // Adjust multiplier
             }
 
             const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.log("Age:", age);
             console.log("Hourly Rate:", hourlyRate);
             console.log("Monthly Salary:", monthlySalary);
+            console.log("Income Percentage Threshold:", incomePercentageThreshold * 100); // Convert back to percentage
             console.log("Max Monthly Contribution:", maxMonthlyContribution);
             console.log("Insurance Fee (Employee Contribution):", employeeInsuranceFee);
             console.log("Required Hourly Rate:", requiredHourlyRate);
