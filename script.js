@@ -34,7 +34,7 @@ async function calculate() {
     // Calculate the employee's contribution (30% of total fee)
     const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
 
-    // Calculate monthly salary based on min hours (corrected calculation)
+    // Calculate monthly salary based on min hours
     const monthlySalary = hourlyRate * minFullTimeHours;
 
     // Calculate maximum monthly contribution (8.39% of monthly salary)

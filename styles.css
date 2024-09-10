@@ -32,12 +32,14 @@ th {
 }
 
 input[type="number"] {
-    width: 80%; /* Reduced size */
-    padding: 4px; /* Reduced padding */
+    width: 50%; /* Further reduced size */
+    padding: 2px; /* Reduced padding */
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 14px; /* Adjusted font size */
 }
+
 
 button {
     background-color: #4CAF50;
