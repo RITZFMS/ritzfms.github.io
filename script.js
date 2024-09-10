@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             // Employee's insurance fee contribution
-            const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
+            const employeeInsuranceFee = Math.round((insuranceFee * employeeContributionPercentage) * 100) / 100;
 
             // Maximum monthly contribution (rounded to the nearest cent)
             const maxMonthlyContribution = Math.round((monthlySalary * incomePercentageThreshold) * 100) / 100;
