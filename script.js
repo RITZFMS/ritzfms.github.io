@@ -18,16 +18,16 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             // Calculate values
             const monthlySalary = hourlyRate * minFullTimeHours;
-            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100; // No division by 100 here since it's already a percentage
+            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100); // No division by 100 here since it's already a percentage
 
             // Insurance fee logic
             let employeeInsuranceFee = 0;
             if (age in insuranceData.insuranceFees) {
                 const insuranceFee = insuranceData.insuranceFees[age];
-                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100; // No division by 100 here
+                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100); // No division by 100 here
             }
 
-            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
+            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100);
 
             // Debug output for checking the values
             console.log("Age:", age);
