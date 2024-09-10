@@ -18,13 +18,21 @@ async function calculate() {
 
     let insuranceFee = 0;
 
+    console.log('User Age:', age);
+    console.log('Insurance Data:', insuranceData.insuranceFees);
+
     // Iterate over the ranges
     for (const range in insuranceData.insuranceFees) {
         const [minAge, maxAge] = range.split('-').map(Number);
         
         // Handle age ranges like 0-14, 64-99, and 100-199
-        if ((maxAge && age >= minAge && age <= maxAge) || (!maxAge && age === minAge)) {
+        if (maxAge && age >= minAge && age <= maxAge) {
             insuranceFee = insuranceData.insuranceFees[range];
+            console.log(`Matching range found: ${range}, Fee: ${insuranceFee}`);
+            break;
+        } else if (!maxAge && age === minAge) {
+            insuranceFee = insuranceData.insuranceFees[range];
+            console.log(`Exact age match found: ${range}, Fee: ${insuranceFee}`);
             break;
         }
     }
