@@ -16,26 +16,20 @@ async function calculate() {
     const incomePercentageThreshold = config.incomePercentageThreshold;
     const employeeContributionPercentage = config.employeeContributionPercentage;
 
-    // Correct insurance fee lookup based on exact age and handling ranges
     let insuranceFee = 0;
 
     // Iterate over the ranges
     for (const range in insuranceData.insuranceFees) {
         const [minAge, maxAge] = range.split('-').map(Number);
         
-        // Handle age ranges like 0-14, 64-99
-        if (maxAge && age >= minAge && age <= maxAge) {
-            insuranceFee = insuranceData.insuranceFees[range];
-            break;
-        }
-        // Handle exact age matches like 15, 16
-        else if (!maxAge && age === minAge) {
+        // Handle age ranges like 0-14, 64-99, and 100-199
+        if ((maxAge && age >= minAge && age <= maxAge) || (!maxAge && age === minAge)) {
             insuranceFee = insuranceData.insuranceFees[range];
             break;
         }
     }
 
-    // Ensure insuranceFee is correctly retrieved
+    // If insuranceFee is not found, show an alert
     if (insuranceFee === 0) {
         alert("Insurance fee not found for this age.");
         return;

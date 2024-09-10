@@ -51,6 +51,6 @@
     "62": 929.64,
     "63": 955.20,
     "64-99": 970.74,
-    "100-999": 970.74  // Added the range for ages 100 and above
+    "100-199": 970.74  // Added the range for ages 100 and above
   }
 }
