@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
 
             const minFullTimeHours = config.minFullTimeHours;
-            const incomePercentageThreshold = config.incomePercentageThreshold; // No division by 100
-            const employeeContributionPercentage = config.employeeContributionPercentage; // No division by 100
+            const incomePercentageThreshold = config.incomePercentageThreshold / 100; // Divide by 100 to correctly interpret the percentage
+            const employeeContributionPercentage = config.employeeContributionPercentage / 100; // Same here
 
             // Calculate values
             const monthlySalary = hourlyRate * minFullTimeHours;
