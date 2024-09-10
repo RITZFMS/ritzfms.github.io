@@ -23,12 +23,12 @@ async function calculate() {
     for (const range in insuranceData.insuranceFees) {
         const [minAge, maxAge] = range.split('-').map(Number);
         
-        // Handle age ranges like 0-14, 64-99
+        // If there's a range (e.g., 0-14, 64-99), check if age falls within the range
         if (maxAge && age >= minAge && age <= maxAge) {
             insuranceFee = insuranceData.insuranceFees[range];
             break;
         }
-        // Handle exact age matches like 15, 16
+        // If there's no range (e.g., exact age like 15, 16), check for an exact match
         else if (!maxAge && age === minAge) {
             insuranceFee = insuranceData.insuranceFees[range];
             break;
