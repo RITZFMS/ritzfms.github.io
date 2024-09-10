@@ -13,27 +13,27 @@ document.addEventListener("DOMContentLoaded", async function () {
             const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
 
             const minFullTimeHours = config.minFullTimeHours;
-            const incomePercentageThreshold = config.incomePercentageThreshold; // Use as percentage
-            const employeeContributionPercentage = config.employeeContributionPercentage; // Use as percentage (already in percentage form, so no need to divide by 100)
+            const incomePercentageThreshold = config.incomePercentageThreshold; // No division by 100
+            const employeeContributionPercentage = config.employeeContributionPercentage; // No division by 100
 
             // Calculate values
             const monthlySalary = hourlyRate * minFullTimeHours;
-            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100); // No division by 100 here since it's already a percentage
+            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100; // Rounded to the nearest cent
 
             // Insurance fee logic
             let employeeInsuranceFee = 0;
             if (age in insuranceData.insuranceFees) {
                 const insuranceFee = insuranceData.insuranceFees[age];
-                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100); // No division by 100 here
+                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100; // Rounded to the nearest cent
             }
 
-            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100);
+            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100; // Rounded to the nearest cent
 
             // Debug output for checking the values
             console.log("Age:", age);
             console.log("Hourly Rate:", hourlyRate);
             console.log("Monthly Salary:", monthlySalary);
-            console.log("Income Percentage Threshold:", incomePercentageThreshold); // Correct as percentage
+            console.log("Income Percentage Threshold:", incomePercentageThreshold); // Keep as is
             console.log("Max Monthly Contribution:", maxMonthlyContribution);
             console.log("Insurance Fee (Employee Contribution):", employeeInsuranceFee);
             console.log("Required Hourly Rate:", requiredHourlyRate);
