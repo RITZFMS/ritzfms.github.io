@@ -32,10 +32,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
 
             // Maximum monthly contribution (rounded to the nearest cent)
-            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100;
+            const maxMonthlyContribution = Math.round((monthlySalary * incomePercentageThreshold) * 100) / 100;
 
             // Required hourly rate (rounded to the nearest cent)
-            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
+            const requiredHourlyRate = Math.round((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
 
             // Update the DOM elements with calculated values
             document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
