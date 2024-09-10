@@ -31,10 +31,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Employee's insurance fee contribution
             const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
 
-            // Maximum monthly contribution
+            // Maximum monthly contribution (rounded to the nearest cent)
             const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100;
 
-            // Required hourly rate
+            // Required hourly rate (rounded to the nearest cent)
             const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
 
             // Update the DOM elements with calculated values
