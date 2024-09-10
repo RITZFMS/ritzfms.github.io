@@ -1,52 +1,65 @@
-document.addEventListener("DOMContentLoaded", async function () {
-    // Load config and insurance data
-    const response = await fetch("config.json");
-    const config = await response.json();
+// Load JSON data
+async function loadJSON(url) {
+    const response = await fetch(url);
+    return await response.json();
+}
 
-    const insuranceResponse = await fetch("insurance-fees.json");
-    const insuranceData = await insuranceResponse.json();
+async function calculate() {
+    const age = parseInt(document.getElementById("age").value);
+    const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
 
-    document.getElementById("calculateBtn").addEventListener("click", calculate);
+    // Load configuration and insurance fee data
+    const config = await loadJSON('config.json');
+    const insuranceData = await loadJSON('insurance-fees.json');
 
-    async function calculate() {
-        try {
-            const age = parseInt(document.getElementById("age").value);
-            const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
+    const minFullTimeHours = config.minFullTimeHours;
+    const incomePercentageThreshold = config.incomePercentageThreshold;
+    const employeeContributionPercentage = config.employeeContributionPercentage;
 
-            const minFullTimeHours = config.minFullTimeHours;
-            const incomePercentageThreshold = config.incomePercentageThreshold / 100;
-            const employeeContributionPercentage = config.employeeContributionPercentage / 100;
+    // Correct insurance fee lookup based on exact age and handling ranges
+    let insuranceFee = 0;
 
-            // Calculate values
-            const monthlySalary = hourlyRate * minFullTimeHours;
-            let insuranceFee = 0;
-
-            // Get insurance fee from JSON data based on age
-            if (age >= 0 && age <= 99) {
-                insuranceFee = insuranceData.insuranceFees[`${age}`] || insuranceData.insuranceFees["64-99"];
-            } else {
-                insuranceFee = insuranceData.insuranceFees["100-199"];
-            }
-
-            // Employee's insurance fee contribution
-            const employeeInsuranceFee = Math.round((insuranceFee * employeeContributionPercentage) * 100) / 100;
-
-            // Maximum monthly contribution (rounded to the nearest cent)
-            const maxMonthlyContribution = Math.round((monthlySalary * incomePercentageThreshold) * 100) / 100;
-
-            // Required hourly rate (rounded to the nearest cent)
-            const requiredHourlyRate = Math.round((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
-
-            // Update the DOM elements with calculated values
-            document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
-            document.getElementById("maxContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
-            document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
-            document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
-
-            const meetsRequirement = employeeInsuranceFee <= maxMonthlyContribution;
-            document.getElementById("meetsRequirement").innerText = meetsRequirement ? "Meets Requirement" : "Does Not Meet Requirement";
-        } catch (error) {
-            console.error("Error in calculation:", error);
+    // Iterate over the ranges
+    for (const range in insuranceData.insuranceFees) {
+        const [minAge, maxAge] = range.split('-').map(Number);
+        
+        // Handle age ranges like 0-14, 64-99
+        if (maxAge && age >= minAge && age <= maxAge) {
+            insuranceFee = insuranceData.insuranceFees[range];
+            break;
+        }
+        // Handle exact age matches like 15, 16
+        else if (!maxAge && age === minAge) {
+            insuranceFee = insuranceData.insuranceFees[range];
+            break;
         }
     }
-});
+
+    // Ensure insuranceFee is correctly retrieved
+    if (insuranceFee === 0) {
+        alert("Insurance fee not found for this age.");
+        return;
+    }
+
+    // Calculate the employee's contribution (30% of total fee)
+    const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
+
+    // Calculate monthly salary based on min hours
+    const monthlySalary = hourlyRate * minFullTimeHours;
+
+    // Calculate maximum monthly contribution (8.39% of monthly salary)
+    const maxMonthlyContribution = monthlySalary * incomePercentageThreshold;
+
+    // Calculate required hourly rate
+    const requiredHourlyRate = Math.ceil((insuranceFee * employeeContributionPercentage) / (minFullTimeHours * incomePercentageThreshold) * 100) / 100;
+
+    // Determine if the employee meets the requirement
+    const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
+
+    // Update the UI with corrected values
+    document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
+    document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
+    document.getElementById("maxMonthlyContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
+    document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
+    document.getElementById("meetsRequirement").innerText = meetsRequirement;
+}
