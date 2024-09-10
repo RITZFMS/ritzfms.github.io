@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const maxMonthlyContribution = monthlySalary * (incomePercentageThreshold / 100);
                 let employeeInsuranceFee = 0;
 
-                // Get insurance fee based on age
+                // Lookup insurance fee
                 for (const range in insuranceData.insuranceFees) {
                     const [minAge, maxAge] = range.split("-").map(Number);
                     if (age >= minAge && age <= maxAge) {
@@ -31,23 +31,22 @@ document.addEventListener("DOMContentLoaded", async function () {
                     }
                 }
 
-                // Calculate contribution and required hourly rate
-                const employeeContribution = (employeeInsuranceFee * employeeContributionPercentage) / 100;
+                const employeeContribution = employeeInsuranceFee * (employeeContributionPercentage / 100);
                 const requiredHourlyRate = (employeeInsuranceFee / minFullTimeHours) / (incomePercentageThreshold / 100);
 
-                // Update DOM
+                // Update UI with calculated values
                 document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
-                document.getElementById("insuranceFee").innerText = `$${employeeContribution.toFixed(2)}`;
                 document.getElementById("maxContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
-                document.getElementById("requiredHourlyRate").innerText = `$${Math.ceil(requiredHourlyRate * 100) / 100}`;
+                document.getElementById("insuranceFee").innerText = `$${employeeContribution.toFixed(2)}`;
+                document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
 
-                const meetsRequirement = employeeContribution <= maxMonthlyContribution;
-                document.getElementById("meetsRequirement").innerText = meetsRequirement ? "Meets Requirement" : "Does Not Meet Requirement";
+                const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
+                document.getElementById("meetsRequirement").innerText = meetsRequirement;
             } catch (error) {
                 console.error("Error in calculation:", error);
             }
         }
     } catch (error) {
-        console.error("Error loading configuration or insurance data:", error);
+        console.error("Error loading config or insurance data:", error);
     }
 });
