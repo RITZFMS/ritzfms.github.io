@@ -7,46 +7,45 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     document.getElementById("calculateBtn").addEventListener("click", calculate);
 
-    function getInsuranceFeeByAge(age, insuranceData) {
-        if (age >= 0 && age <= 14) {
-            return insuranceData["0-14"];
-        } else if (age >= 64 && age <= 99) {
-            return insuranceData["64-99"];
-        } else if (age >= 100 && age <= 199) {
-            return insuranceData["100-199"];
-        } else {
-            return insuranceData[age.toString()] || 0; // Fallback for specific ages if they exist as exact values
-        }
-    }
-
     async function calculate() {
         try {
             const age = parseInt(document.getElementById("age").value);
             const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
 
             const minFullTimeHours = config.minFullTimeHours;
-            const incomePercentageThreshold = config.incomePercentageThreshold / 100;
-            const employeeContributionPercentage = config.employeeContributionPercentage / 100;
+            const incomePercentageThreshold = config.incomePercentageThreshold; // No division by 100
+            const employeeContributionPercentage = config.employeeContributionPercentage; // No division by 100
 
             // Calculate values
             const monthlySalary = hourlyRate * minFullTimeHours;
-            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100;
+            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100; // Rounded to the nearest cent
 
-            // Insurance fee logic with age range handling
+            // Insurance fee logic
             let employeeInsuranceFee = 0;
-            const insuranceFee = getInsuranceFeeByAge(age, insuranceData);
-
-            if (insuranceFee) {
-                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100;
+            if (age in insuranceData.insuranceFees) {
+                const insuranceFee = insuranceData.insuranceFees[age];
+                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100; // Rounded to the nearest cent
+            } else {
+                // Handle age ranges
+                if (age >= 0 && age <= 14) {
+                    const insuranceFee = insuranceData.insuranceFees["0-14"];
+                    employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100;
+                } else if (age >= 64 && age <= 99) {
+                    const insuranceFee = insuranceData.insuranceFees["64-99"];
+                    employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100;
+                } else if (age >= 100 && age <= 199) {
+                    const insuranceFee = insuranceData.insuranceFees["100-199"];
+                    employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100;
+                }
             }
 
-            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
+            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100; // Rounded to the nearest cent
 
             // Debug output for checking the values
             console.log("Age:", age);
             console.log("Hourly Rate:", hourlyRate);
             console.log("Monthly Salary:", monthlySalary);
-            console.log("Income Percentage Threshold:", incomePercentageThreshold);
+            console.log("Income Percentage Threshold:", incomePercentageThreshold); // Keep as is
             console.log("Max Monthly Contribution:", maxMonthlyContribution);
             console.log("Insurance Fee (Employee Contribution):", employeeInsuranceFee);
             console.log("Required Hourly Rate:", requiredHourlyRate);
