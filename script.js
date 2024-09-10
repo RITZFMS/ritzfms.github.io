@@ -13,27 +13,27 @@ document.addEventListener("DOMContentLoaded", async function () {
             const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
             
             const minFullTimeHours = config.minFullTimeHours;
-            const incomePercentageThreshold = config.incomePercentageThreshold / 100; // Keep as is
-            const employeeContributionPercentage = config.employeeContributionPercentage / 100; // Keep as is
+            const incomePercentageThreshold = config.incomePercentageThreshold / 100; // Still necessary to keep as is
+            const employeeContributionPercentage = config.employeeContributionPercentage / 100; // Also correct to keep as is
 
             // Calculate values
             const monthlySalary = hourlyRate * minFullTimeHours;
             const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100;
 
-            // Ensure proper decimal placement for insurance fees
+            // Insurance fee logic
             let employeeInsuranceFee = 0;
             if (age in insuranceData.insuranceFees) {
                 const insuranceFee = insuranceData.insuranceFees[age];
-                employeeInsuranceFee = (insuranceFee * employeeContributionPercentage); // Adjust multiplier
+                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100; // Correct the decimal placement
             }
 
             const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
 
-            // Debug output for understanding the calculation flow
+            // Debug output for checking the values
             console.log("Age:", age);
             console.log("Hourly Rate:", hourlyRate);
             console.log("Monthly Salary:", monthlySalary);
-            console.log("Income Percentage Threshold:", incomePercentageThreshold * 100); // Convert back to percentage
+            console.log("Income Percentage Threshold:", incomePercentageThreshold * 100); // Convert back to percentage for display
             console.log("Max Monthly Contribution:", maxMonthlyContribution);
             console.log("Insurance Fee (Employee Contribution):", employeeInsuranceFee);
             console.log("Required Hourly Rate:", requiredHourlyRate);
