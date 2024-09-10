@@ -13,21 +13,21 @@ document.addEventListener("DOMContentLoaded", async function () {
             const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
 
             const minFullTimeHours = config.minFullTimeHours;
-            const incomePercentageThreshold = config.incomePercentageThreshold; // Keep as percentage, no need to divide by 100
-            const employeeContributionPercentage = config.employeeContributionPercentage; // Keep as percentage, no need to divide by 100
+            const incomePercentageThreshold = config.incomePercentageThreshold; // Use as percentage
+            const employeeContributionPercentage = config.employeeContributionPercentage; // Use as percentage (already in percentage form, so no need to divide by 100)
 
             // Calculate values
             const monthlySalary = hourlyRate * minFullTimeHours;
-            const maxMonthlyContribution = Math.ceil((monthlySalary * (incomePercentageThreshold / 100)) * 100) / 100;
+            const maxMonthlyContribution = Math.ceil((monthlySalary * incomePercentageThreshold) * 100) / 100; // No division by 100 here since it's already a percentage
 
             // Insurance fee logic
             let employeeInsuranceFee = 0;
             if (age in insuranceData.insuranceFees) {
                 const insuranceFee = insuranceData.insuranceFees[age];
-                employeeInsuranceFee = Math.ceil((insuranceFee * (employeeContributionPercentage / 100)) * 100) / 100;
+                employeeInsuranceFee = Math.ceil((insuranceFee * employeeContributionPercentage) * 100) / 100; // No division by 100 here
             }
 
-            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * (incomePercentageThreshold / 100))) * 100) / 100;
+            const requiredHourlyRate = Math.ceil((employeeInsuranceFee / (minFullTimeHours * incomePercentageThreshold)) * 100) / 100;
 
             // Debug output for checking the values
             console.log("Age:", age);
