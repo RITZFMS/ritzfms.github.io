@@ -1,6 +1,5 @@
-// Load JSON data
-async function loadJSON(url) {
-    const response = await fetch(url);
+async function loadJSON(file) {
+    const response = await fetch(file);
     return await response.json();
 }
 
@@ -18,50 +17,43 @@ async function calculate() {
 
     let insuranceFee = 0;
 
-    console.log('User Age:', age);
-    console.log('Insurance Data:', insuranceData.insuranceFees);
-
     // Iterate over the ranges
     for (const range in insuranceData.insuranceFees) {
         const [minAge, maxAge] = range.split('-').map(Number);
-        
-        // Handle age ranges like 0-14, 64-99, and 100-199
+
+        // Handle ranges (e.g., 0-14, 64-99, 100-199)
         if (maxAge && age >= minAge && age <= maxAge) {
             insuranceFee = insuranceData.insuranceFees[range];
-            console.log(`Matching range found: ${range}, Fee: ${insuranceFee}`);
             break;
-        } else if (!maxAge && age === minAge) {
+        }
+        // Handle exact age matches (e.g., 15, 16)
+        else if (!maxAge && age === minAge) {
             insuranceFee = insuranceData.insuranceFees[range];
-            console.log(`Exact age match found: ${range}, Fee: ${insuranceFee}`);
             break;
         }
     }
 
-    // If insuranceFee is not found, show an alert
     if (insuranceFee === 0) {
         alert("Insurance fee not found for this age.");
         return;
     }
 
-    // Calculate the employee's contribution (30% of total fee)
-    const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
-
-    // Calculate monthly salary based on min hours
+    // Perform further calculations here...
     const monthlySalary = hourlyRate * minFullTimeHours;
+    const employeeInsuranceFee = insuranceFee * (employeeContributionPercentage / 100);
+    const maxMonthlyContribution = (incomePercentageThreshold / 100) * monthlySalary;
+    const requiredHourlyRate = employeeInsuranceFee / (minFullTimeHours * (incomePercentageThreshold / 100));
 
-    // Calculate maximum monthly contribution (8.39% of monthly salary)
-    const maxMonthlyContribution = monthlySalary * incomePercentageThreshold;
-
-    // Calculate required hourly rate
-    const requiredHourlyRate = Math.ceil((insuranceFee * employeeContributionPercentage) / (minFullTimeHours * incomePercentageThreshold) * 100) / 100;
-
-    // Determine if the employee meets the requirement
-    const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
-
-    // Update the UI with corrected values
+    // Update HTML with calculated values
     document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
     document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
-    document.getElementById("maxMonthlyContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
-    document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
-    document.getElementById("meetsRequirement").innerText = meetsRequirement;
+    document.getElementById("maxContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
+    document.getElementById("requiredRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
+
+    // Determine if meets requirement
+    const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
+    document.getElementById("requirement").innerText = meetsRequirement;
 }
+
+// Attach calculate function to the button
+document.getElementById("calculateBtn").addEventListener("click", calculate);
