@@ -1,84 +1,53 @@
-// Wait for the DOM to fully load before attaching event listeners
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM fully loaded and parsed");
+document.addEventListener("DOMContentLoaded", async function () {
+    const response = await fetch("config.json");
+    const config = await response.json();
 
-    const calculateBtn = document.getElementById("calculateBtn");
+    const insuranceResponse = await fetch("insurance-fees.json");
+    const insuranceData = await insuranceResponse.json();
 
-    if (calculateBtn) {
-        console.log("Button found");
-        calculateBtn.addEventListener("click", calculate);
-    } else {
-        console.log("Button not found");
-    }
-});
+    document.getElementById("calculate").addEventListener("click", calculate);
 
-// Ensure that the calculate function is defined
-async function calculate() {
-    console.log("Calculate function called");
-
-    const age = parseInt(document.getElementById("age").value);
-    const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
-
-    if (isNaN(age) || isNaN(hourlyRate)) {
-        alert("Please enter valid age and hourly rate.");
-        return;
-    }
-
-    try {
-        // Load configuration and insurance fee data
-        const config = await loadJSON("config.json");
-        const insuranceData = await loadJSON("insurance-fees.json");
-
+    async function calculate() {
+        const age = parseInt(document.getElementById("age").value);
+        const hourlyRate = parseFloat(document.getElementById("hourlyRate").value);
+        
         const minFullTimeHours = config.minFullTimeHours;
         const incomePercentageThreshold = config.incomePercentageThreshold;
         const employeeContributionPercentage = config.employeeContributionPercentage;
 
-        let insuranceFee = 0;
-
-        // Iterate over the ranges in the insurance-fees.json file
-        for (const range in insuranceData.insuranceFees) {
-            const [minAge, maxAge] = range.split("-").map(Number);
-
-            // Check if age falls within a range
+        // Calculate values
+        const monthlySalary = hourlyRate * minFullTimeHours;
+        const maxMonthlyContribution = monthlySalary * (incomePercentageThreshold / 100);
+        
+        let employeeInsuranceFee = 0;
+        
+        // Check insurance fees
+        for (const [range, fee] of Object.entries(insuranceData.insuranceFees)) {
+            const [minAge, maxAge] = range.split('-').map(Number);
             if (maxAge && age >= minAge && age <= maxAge) {
-                insuranceFee = insuranceData.insuranceFees[range];
+                employeeInsuranceFee = fee * (employeeContributionPercentage / 100);
                 break;
-            }
-
-            // Check for an exact match (e.g., age 15, 16)
-            else if (!maxAge && age === minAge) {
-                insuranceFee = insuranceData.insuranceFees[range];
+            } else if (!maxAge && age === minAge) {
+                employeeInsuranceFee = fee * (employeeContributionPercentage / 100);
                 break;
             }
         }
 
-        if (insuranceFee === 0) {
+        // Default values for insurance fees out of range
+        if (employeeInsuranceFee === 0) {
             alert("Insurance fee not found for this age.");
             return;
         }
 
-        const monthlySalary = hourlyRate * minFullTimeHours;
-        const maxMonthlyContribution = (monthlySalary * incomePercentageThreshold) / 100;
-        const employeeContribution = (insuranceFee * employeeContributionPercentage) / 100;
-        const requiredHourlyRate = (insuranceFee / minFullTimeHours) / (incomePercentageThreshold / 100);
+        const requiredHourlyRate = employeeInsuranceFee / (minFullTimeHours * (incomePercentageThreshold / 100));
 
+        // Update values on the page
         document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
-        document.getElementById("maxContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
-        document.getElementById("insuranceFee").innerText = `$${employeeContribution.toFixed(2)}`;
-        document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
+        document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
+        document.getElementById("maxMonthlyContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
+        document.getElementById("requiredRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
 
-        const meetsRequirement = (employeeContribution <= maxMonthlyContribution);
-        document.getElementById("meetsRequirement").innerText = meetsRequirement ? "Meets Requirement" : "Does Not Meet Requirement";
-    } catch (error) {
-        console.error("Error in calculation:", error);
+        const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
+        document.getElementById("meetsRequirement").innerText = meetsRequirement;
     }
-}
-
-// Helper function to load JSON files
-async function loadJSON(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`Failed to load JSON from ${url}: ${response.statusText}`);
-    }
-    return response.json();
-}
+});
