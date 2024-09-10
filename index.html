@@ -4,54 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rate of Pay Safe Harbor Calculator</title>
-    <!-- Link to the new CSS file -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<div class="container">
-    <h3>Rate of Pay Safe Harbor Calculator</h3>
-
-    <table>
-        <tr>
-            <th>Employee Age</th>
-            <td><input type="number" id="age" placeholder="Enter age"></td>
-            <th>Current Hourly Rate ($)</th>
-            <td><input type="number" id="hourlyRate" placeholder="Enter hourly rate"></td>
-        </tr>
-        <tr>
-            <th>Minimum Hours For Full Time</th>
-            <td>120</td>
-            <th>Income Percentage Threshold</th>
-            <td>8.39%</td>
-        </tr>
-        <tr>
-            <th>Monthly Salary Based on Min Hours</th>
-            <td id="monthlySalary">$0.00</td>
-            <th>Employee Contribution Percentage</th>
-            <td>30.00%</td>
-        </tr>
-        <tr>
-            <th>Insurance Plan</th>
-            <td>Silver 70 HMO</td>
-            <th>Insurance Fee (Employee's Contribution)</th>
-            <td id="insuranceFee">$0.00</td>
-        </tr>
-        <tr>
-            <th>Maximum Monthly Contribution</th>
-            <td id="maxMonthlyContribution">$0.00</td>
-            <th>Required Hourly Rate</th>
-            <td id="requiredHourlyRate">$0.00</td>
-        </tr>
-        <tr>
-            <th>Meets Requirement?</th>
-            <td id="meetsRequirement" colspan="3">-</td>
-        </tr>
-    </table>
-
-    <button id="calculateBtn">Calculate</button>
-</div>
-
-<script src="script.js"></script>
+    <div class="container">
+        <h1>Rate of Pay Safe Harbor Calculator</h1>
+        <table>
+            <tr>
+                <td>Employee Age</td>
+                <td><input id="age" type="number" /></td>
+                <td>Current Hourly Rate ($)</td>
+                <td><input id="hourlyRate" type="number" /></td>
+            </tr>
+            <tr>
+                <td>Minimum Hours For Full Time</td>
+                <td id="minHours">120</td>
+                <td>Income Percentage Threshold</td>
+                <td id="incomePercentageThreshold">8.39%</td>
+            </tr>
+            <tr>
+                <td>Monthly Salary Based on Min Hours</td>
+                <td id="monthlySalary">$0.00</td>
+                <td>Employee Contribution Percentage</td>
+                <td id="employeeContributionPercentage">30.00%</td>
+            </tr>
+            <tr>
+                <td>Insurance Plan</td>
+                <td>Silver 70 HMO</td>
+                <td>Insurance Fee (Employee's Contribution)</td>
+                <td id="insuranceFee">$0.00</td>
+            </tr>
+            <tr>
+                <td>Maximum Monthly Contribution</td>
+                <td id="maxContribution">$0.00</td>
+                <td>Required Hourly Rate</td>
+                <td id="requiredHourlyRate">$0.00</td>
+            </tr>
+            <tr>
+                <td>Meets Requirement?</td>
+                <td id="meetsRequirement">-</td>
+            </tr>
+        </table>
+        <button id="calculateBtn">Calculate</button>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
