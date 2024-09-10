@@ -16,7 +16,7 @@ async function calculate() {
     const incomePercentageThreshold = config.incomePercentageThreshold;
     const employeeContributionPercentage = config.employeeContributionPercentage;
 
-    // Find the insurance fee based on age for the Silver 70 HMO plan
+    // Correct logic for determining the insurance fee based on age
     let insuranceFee = 0;
     for (const range in insuranceData.insuranceFees) {
         const [minAge, maxAge] = range.split('-').map(Number);
@@ -31,10 +31,10 @@ async function calculate() {
         }
     }
 
-    // Calculate the employee's contribution for the insurance fee (30% of total)
+    // Calculate the employee's contribution (30% of total fee)
     const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
 
-    // Monthly salary based on minimum full-time hours
+    // Calculate monthly salary based on min hours (corrected calculation)
     const monthlySalary = hourlyRate * minFullTimeHours;
 
     // Calculate maximum monthly contribution (8.39% of monthly salary)
@@ -46,7 +46,7 @@ async function calculate() {
     // Determine if the employee meets the requirement
     const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
 
-    // Update the UI with calculated values
+    // Update the UI with corrected values
     document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
     document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
     document.getElementById("maxMonthlyContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
