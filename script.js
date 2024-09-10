@@ -16,16 +16,12 @@ async function calculate() {
     const incomePercentageThreshold = config.incomePercentageThreshold;
     const employeeContributionPercentage = config.employeeContributionPercentage;
 
-    // Correct logic for determining the insurance fee based on age
+    // Fix: Correct insurance fee lookup based on exact age and handling ranges
     let insuranceFee = 0;
     for (const range in insuranceData.insuranceFees) {
         const [minAge, maxAge] = range.split('-').map(Number);
-        if (!maxAge) {
-            if (age === minAge) {
-                insuranceFee = insuranceData.insuranceFees[range];
-                break;
-            }
-        } else if (age >= minAge && age <= maxAge) {
+        // Handle exact matches and ranges where maxAge could be 99
+        if ((maxAge && age >= minAge && age <= maxAge) || (!maxAge && age === minAge)) {
             insuranceFee = insuranceData.insuranceFees[range];
             break;
         }
