@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
                 document.getElementById("maxContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
                 document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
-                document.getElementById("requiredHourlyRate").innerText = `$${(Math.ceil(requiredHourlyRate * 100) / 100).toFixed(2)}`;
+                document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
                 
                 const meetsRequirement = employeeContribution <= maxMonthlyContribution ? "Meets Requirement" : "Does Not Meet Requirement";
                 document.getElementById("meetsRequirement").innerText = meetsRequirement;
