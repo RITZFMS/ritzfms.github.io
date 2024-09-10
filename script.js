@@ -16,7 +16,7 @@ async function calculate() {
     const incomePercentageThreshold = config.incomePercentageThreshold;
     const employeeContributionPercentage = config.employeeContributionPercentage;
 
-    // Determine the insurance fee based on the age
+    // Find the insurance fee based on age for the Silver 70 HMO plan
     let insuranceFee = 0;
     for (const range in insuranceData.insuranceFees) {
         const [minAge, maxAge] = range.split('-').map(Number);
@@ -31,20 +31,24 @@ async function calculate() {
         }
     }
 
+    // Calculate the employee's contribution for the insurance fee (30% of total)
+    const employeeInsuranceFee = insuranceFee * employeeContributionPercentage;
+
     // Monthly salary based on minimum full-time hours
     const monthlySalary = hourlyRate * minFullTimeHours;
 
-    // Calculate maximum monthly contribution
+    // Calculate maximum monthly contribution (8.39% of monthly salary)
     const maxMonthlyContribution = monthlySalary * incomePercentageThreshold;
 
-    // Required hourly rate
+    // Calculate required hourly rate
     const requiredHourlyRate = Math.ceil((insuranceFee * employeeContributionPercentage) / (minFullTimeHours * incomePercentageThreshold) * 100) / 100;
 
     // Determine if the employee meets the requirement
     const meetsRequirement = hourlyRate >= requiredHourlyRate ? "Meets Requirement" : "Does Not Meet Requirement";
 
-    // Display results
-    document.getElementById("insuranceFee").innerText = `$${insuranceFee.toFixed(2)}`;
+    // Update the UI with calculated values
+    document.getElementById("monthlySalary").innerText = `$${monthlySalary.toFixed(2)}`;
+    document.getElementById("insuranceFee").innerText = `$${employeeInsuranceFee.toFixed(2)}`;
     document.getElementById("maxMonthlyContribution").innerText = `$${maxMonthlyContribution.toFixed(2)}`;
     document.getElementById("requiredHourlyRate").innerText = `$${requiredHourlyRate.toFixed(2)}`;
     document.getElementById("meetsRequirement").innerText = meetsRequirement;
