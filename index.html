@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate of Pay Safe Harbor Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h3>Rate of Pay Safe Harbor Calculator</h3>
+
+        <label for="age">Employee Age:</label>
+        <input type="number" id="age" placeholder="Enter age" />
+
+        <label for="hourlyRate">Current Hourly Rate ($):</label>
+        <input type="number" id="hourlyRate" placeholder="Enter hourly rate" />
+
+        <button onclick="calculate()">Calculate</button>
+
+        <div class="result">
+            <p><strong>Insurance Fee:</strong> <span id="insuranceFee">$0.00</span></p>
+            <p><strong>Maximum Monthly Contribution:</strong> <span id="maxMonthlyContribution">$0.00</span></p>
+            <p><strong>Required Hourly Rate:</strong> <span id="requiredHourlyRate">$0.00</span></p>
+            <p><strong>Meets Requirement?</strong> <span id="meetsRequirement">-</span></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
